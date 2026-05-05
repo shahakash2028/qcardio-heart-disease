@@ -1,0 +1,24 @@
+# Virtual environments
+venv/
+venv_clean/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Models (optional)
+*.pth
+*.pkl
+*.pt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Cardio AI | Heart Disease Diagnosis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Ambient background ── -->
+<div class="ambient">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <canvas id="gridCanvas"></canvas>
+</div>
+
+<div class="app">
+
+    <!-- ══ HEADER ══ -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-wrap">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="19" stroke="url(#lg1)" stroke-width="1.5"/>
+                    <path d="M8 20 L13 20 L16 13 L20 27 L24 17 L27 20 L32 20"
+                          stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="lg1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#00f5d4"/>
+                            <stop offset="1" stop-color="#e8303a"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">Q-Cardio<em>AI</em></span>
+            </div>
+            <div class="tagline">Hybrid Quantum-Classical Diagnosis</div>
+        </div>
+        <div class="header-right">
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span>System Online</span>
+            </div>
+            <div class="model-badge">PyTorch · Qiskit · 13 Features</div>
+        </div>
+    </header>
+
+    <!-- ── EKG ticker ── -->
+    <div class="ekg-bar">
+        <svg class="ekg-svg" viewBox="0 0 1200 40" preserveAspectRatio="none">
+            <polyline class="ekg-line" points="
+                0,20 80,20 100,20 110,5 120,35 130,2 140,38 150,20 170,20
+                250,20 270,20 280,5 290,35 300,2 310,38 320,20 340,20
+                420,20 440,20 450,5 460,35 470,2 480,38 490,20 510,20
+                590,20 610,20 620,5 630,35 640,2 650,38 660,20 680,20
+                760,20 780,20 790,5 800,35 810,2 820,38 830,20 850,20
+                930,20 950,20 960,5 970,35 980,2 990,38 1000,20 1020,20
+                1100,20 1120,20 1130,5 1140,35 1150,2 1160,38 1170,20 1200,20
+            "/>
+        </svg>
+    </div>
+
+    <!-- ══ MAIN LAYOUT ══ -->
+    <main class="main">
+
+        <!-- ── LEFT: Input Form ── -->
+        <section class="card card-form" id="formCard">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                    </svg>
+                    Patient Clinical Data
+                </h2>
+                <div class="feature-tag">13 Features</div>
+            </div>
+
+            <form id="predictionForm" autocomplete="off">
+                <div class="form-grid">
+
+                    <!-- age -->
+                    <div class="field">
+                        <label class="field-label">Age <span class="unit">years</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="age" value="52" min="1" max="120" placeholder="1–120">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- sex -->
+                    <div class="field">
+                        <label class="field-label">Sex</label>
+                        <div class="custom-select" data-id="sex" data-value="1">
+                            <div class="cs-display">
+                                <span class="cs-text">Male</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item active" data-value="1">Male</li>
+                                <li class="cs-item" data-value="0">Female</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- cp -->
+                    <div class="field">
+                        <label class="field-label">Chest Pain <span class="unit">cp</span></label>
+                        <div class="custom-select" data-id="cp" data-value="2">
+                            <div class="cs-display">
+                                <span class="cs-text">Non-anginal (2)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item" data-value="0">Typical Angina (0)</li>
+                                <li class="cs-item" data-value="1">Atypical Angina (1)</li>
+                                <li class="cs-item active" data-value="2">Non-anginal (2)</li>
+                                <li class="cs-item" data-value="3">Asymptomatic (3)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- trestbps -->
+                    <div class="field">
+                        <label class="field-label">Resting BP <span class="unit">mm Hg</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="trestbps" value="125" min="80" max="200">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- chol -->
+                    <div class="field">
+                        <label class="field-label">Cholesterol <span class="unit">mg/dL</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="chol" value="212" min="100" max="600">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- fbs -->
+                    <div class="field">
+                        <label class="field-label">Fasting Sugar <span class="unit">fbs</span></label>
+                        <div class="custom-select" data-id="fbs" data-value="0">
+                            <div class="cs-display">
+                                <span class="cs-text">≤ 120 mg/dL (0)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item active" data-value="0">≤ 120 mg/dL (0)</li>
+                                <li class="cs-item" data-value="1">&gt; 120 mg/dL (1)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- restecg -->
+                    <div class="field">
+                        <label class="field-label">Resting ECG <span class="unit">restecg</span></label>
+                        <div class="custom-select" data-id="restecg" data-value="1">
+                            <div class="cs-display">
+                                <span class="cs-text">ST-T Abnormality (1)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item" data-value="0">Normal (0)</li>
+                                <li class="cs-item active" data-value="1">ST-T Abnormality (1)</li>
+                                <li class="cs-item" data-value="2">LV Hypertrophy (2)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- thalach -->
+                    <div class="field">
+                        <label class="field-label">Max Heart Rate <span class="unit">bpm</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="thalach" value="168" min="60" max="220">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- exang -->
+                    <div class="field">
+                        <label class="field-label">Exercise Angina <span class="unit">exang</span></label>
+                        <div class="custom-select" data-id="exang" data-value="0">
+                            <div class="cs-display">
+                                <span class="cs-text">No (0)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item active" data-value="0">No (0)</li>
+                                <li class="cs-item" data-value="1">Yes (1)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- oldpeak -->
+                    <div class="field">
+                        <label class="field-label">ST Depression <span class="unit">oldpeak</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="oldpeak" value="1.0" step="0.1" min="0" max="6.2">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- slope -->
+                    <div class="field">
+                        <label class="field-label">ST Slope <span class="unit">slope</span></label>
+                        <div class="custom-select" data-id="slope" data-value="2">
+                            <div class="cs-display">
+                                <span class="cs-text">Upsloping (2)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item" data-value="0">Downsloping (0)</li>
+                                <li class="cs-item" data-value="1">Flat (1)</li>
+                                <li class="cs-item active" data-value="2">Upsloping (2)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- ca -->
+                    <div class="field">
+                        <label class="field-label">Major Vessels <span class="unit">ca 0–4</span></label>
+                        <div class="input-wrap">
+                            <input class="field-input" type="number" id="ca" value="2" min="0" max="4">
+                            <div class="input-bar"></div>
+                        </div>
+                    </div>
+
+                    <!-- thal — full width -->
+                    <div class="field field-full">
+                        <label class="field-label">Thalassemia <span class="unit">thal</span></label>
+                        <div class="custom-select" data-id="thal" data-value="3">
+                            <div class="cs-display">
+                                <span class="cs-text">Unknown (3)</span>
+                                <svg class="cs-arrow" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
+                            </div>
+                            <ul class="cs-list">
+                                <li class="cs-item" data-value="0">Normal (0)</li>
+                                <li class="cs-item" data-value="1">Fixed Defect (1)</li>
+                                <li class="cs-item" data-value="2">Reversible Defect (2)</li>
+                                <li class="cs-item active" data-value="3">Unknown (3)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div><!-- /.form-grid -->
+
+                <button type="submit" class="btn-analyze" id="analyzeBtn">
+                    <span class="btn-inner">
+                        <svg class="btn-icon spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2a10 10 0 1 0 10 10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        <span class="btn-label">Run Quantum Analysis</span>
+                    </span>
+                    <div class="btn-shine"></div>
+                </button>
+
+            </form>
+        </section>
+
+        <!-- ── RIGHT: Result Panel ── -->
+        <aside class="card card-result" id="resultCard">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                    Diagnosis Result
+                </h2>
+            </div>
+
+            <!-- Idle state -->
+            <div class="result-idle" id="resultIdle">
+                <div class="idle-icon">
+                    <svg viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="36" stroke="rgba(0,245,212,0.15)" stroke-width="1"/>
+                        <circle cx="40" cy="40" r="26" stroke="rgba(0,245,212,0.1)" stroke-width="1"/>
+                        <path d="M20 40 L28 40 L32 28 L40 52 L44 36 L48 40 L56 40"
+                              stroke="rgba(0,245,212,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <p class="idle-text">Enter patient data<br>and run analysis</p>
+            </div>
+
+            <!-- Loader -->
+            <div class="result-loader hidden" id="resultLoader">
+                <div class="quantum-ring">
+                    <div class="qr-track"></div>
+                    <div class="qr-orbit qr-o1"><div class="qr-electron"></div></div>
+                    <div class="qr-orbit qr-o2"><div class="qr-electron"></div></div>
+                    <div class="qr-orbit qr-o3"><div class="qr-electron"></div></div>
+                    <div class="qr-core">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="loader-label">Quantum backend processing…</p>
+                <div class="loader-steps">
+                    <span class="step active" id="step1">Encoding features</span>
+                    <span class="step" id="step2">Quantum circuit</span>
+                    <span class="step" id="step3">Ensemble voting</span>
+                </div>
+            </div>
+
+            <!-- Result content -->
+            <div class="result-content hidden" id="resultContent">
+
+                <!-- Gauge ring -->
+                <div class="gauge-wrap">
+                    <svg class="gauge-svg" viewBox="0 0 160 160">
+                        <defs>
+                            <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f5d4"/>
+                                <stop offset="100%" stop-color="#e8303a"/>
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                            </filter>
+                        </defs>
+                        <circle class="gauge-bg"   cx="80" cy="80" r="65" />
+                        <circle class="gauge-track" cx="80" cy="80" r="65" />
+                        <circle class="gauge-fill"  cx="80" cy="80" r="65"
+                                stroke-dasharray="408.41" stroke-dashoffset="408.41"
+                                filter="url(#glow)" id="gaugeFill"/>
+                        <!-- tick marks -->
+                        <g class="gauge-ticks" id="gaugeTicks"></g>
+                    </svg>
+                    <div class="gauge-center">
+                        <span class="gauge-pct" id="gaugePct">0%</span>
+                        <small class="gauge-sub">Risk Score</small>
+                    </div>
+                </div>
+
+                <!-- Verdict -->
+                <div class="verdict" id="verdict">
+                    <div class="verdict-icon" id="verdictIcon"></div>
+                    <h3 class="verdict-label" id="verdictLabel">–</h3>
+                </div>
+
+                <!-- Recommendation -->
+                <p class="rec-text" id="recText">–</p>
+
+                <!-- Stats row -->
+                <div class="stats-row">
+                    <div class="stat">
+                        <span class="stat-val" id="rawQVal">–</span>
+                        <span class="stat-key">Quantum Prob</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-val" id="threshVal">0.40</span>
+                        <span class="stat-key">Threshold</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-val" id="ensembleMode">60/40</span>
+                        <span class="stat-key">Ensemble</span>
+                    </div>
+                </div>
+
+                <!-- Confidence bars -->
+                <div class="conf-bars">
+                    <div class="conf-row">
+                        <span class="conf-label">Model Fidelity</span>
+                        <span class="conf-val">92%</span>
+                    </div>
+                    <div class="conf-track"><div class="conf-fill teal" style="width:0" data-w="92%"></div></div>
+
+                    <div class="conf-row" style="margin-top:10px">
+                        <span class="conf-label">Quantum Weight</span>
+                        <span class="conf-val">60%</span>
+                    </div>
+                    <div class="conf-track"><div class="conf-fill red" style="width:0" data-w="60%"></div></div>
+                </div>
+
+            </div><!-- /.result-content -->
+
+        </aside>
+
+    </main>
+
+    <footer class="footer">
+        <span>© 2026 Quantum Medical AI Research Lab</span>
+        <span class="footer-dot">·</span>
+        <span>All Systems Operational</span>
+    </footer>
+
+</div><!-- /.app -->
+
+<!-- Hidden inputs for custom selects -->
+<div id="hiddenInputs" style="display:none"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
